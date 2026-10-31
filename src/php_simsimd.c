@@ -1056,7 +1056,8 @@ static void simsimd_complex_curve(simsimd_php_kind kind, simsimd_buf *a, simsimd
             simsimd_bilinear_f32c(a->data, b->data, c->data, n, results);
             break;
         case SIMSIMD_KIND_F16:
-            simsimd_bilinear_f16c(a->data, b->data, c->data, n, results);
+            /* 6.5.16 Haswell kernel returns garbage when n is not a multiple of its tile. */
+            simsimd_bilinear_f16c_serial(a->data, b->data, c->data, n, results);
             break;
         case SIMSIMD_KIND_BF16:
             /* 6.5.16 Genoa kernel returns garbage when n is not a multiple of 16. */
