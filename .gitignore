@@ -2,6 +2,7 @@
 .vs/
 .DS_Store
 *.dSYM/
+.workbuddy-ai/
 
 /dist/
 /src/simsimd_version.h
@@ -48,6 +49,9 @@
 /pie/*.la
 /pie/.dep
 /pie/.lo
+/pie/conf*
+!/pie/config.m4
+!/pie/config.w32
 /pie/confdefs.h
 /pie/conftest*
 /pie/conf*.dir
