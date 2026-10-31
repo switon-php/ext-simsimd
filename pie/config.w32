@@ -1,0 +1,9 @@
+ARG_ENABLE("simsimd", "enable simsimd", "yes");
+
+if (PHP_SIMSIMD != "no") {
+	var simsimd_src = configure_module_dirname + "\\..\\src";
+	var simsimd_lib = configure_module_dirname + "\\..\\third_party\\simsimd";
+	EXTENSION("simsimd", "..\\src\\php_simsimd.c");
+	ADD_SOURCES(simsimd_lib + "\\c", "lib.c", "simsimd");
+	ADD_FLAG("CFLAGS_SIMSIMD", "/I " + simsimd_lib + "\\include /I " + simsimd_src);
+}
