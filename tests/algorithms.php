@@ -307,14 +307,14 @@ foreach (['f16', 'bf16'] as $kind) {
     near(Vector::cosine([0, 0], [1, 0], $kind), 1.0, "cosine $kind one zero", 1e-4);
     near(Vector::dot([1, 2, 3], [4, 5, 6], $kind), 32.0, "dot $kind sample");
     near(Vector::sqeuclidean([1, 2], [4, 6], $kind), 25.0, "sqeuclidean $kind sample");
-    near(Vector::euclidean([3, 4], [0, 0], $kind), 5.0, "euclidean $kind sample", 1e-3);
+    nearRoot(Vector::euclidean([3, 4], [0, 0], $kind), 25.0, "euclidean $kind sample");
     foreach (HALF_LENGTHS as $n) {
         $left = ints($n, 1);
         $right = ints($n, 4);
         near(Vector::dot($left, $right, $kind), refDot($left, $right), "dot $kind $n");
         near(Vector::sqeuclidean($left, $right, $kind), refSqeuclidean($left, $right), "sqeuclidean $kind $n", $tol);
         near(Vector::cosine($left, $right, $kind), refCosine($left, $right), "cosine $kind $n", 1e-3);
-        near(Vector::euclidean($left, $right, $kind), sqrt(refSqeuclidean($left, $right)), "euclidean $kind $n", 1e-3);
+        nearRoot(Vector::euclidean($left, $right, $kind), refSqeuclidean($left, $right), "euclidean $kind $n");
     }
     $packedLeft = packHalf($kind, [1.0, 2.0, 3.0]);
     $packedRight = packHalf($kind, [4.0, 5.0, 6.0]);
@@ -506,7 +506,7 @@ near(Vector::dot([1, 2, 3], [4, 5, 6], 'u8'), 32.0, 'dot u8');
 near(Vector::cosine([1, 0], [1, 0], 'u8'), 0.0, 'cosine u8 identical', 1e-4);
 near(Vector::cosine([1, 0], [0, 1], 'u8'), 1.0, 'cosine u8 orthogonal', 1e-4);
 near(Vector::sqeuclidean([1, 2], [4, 6], 'u8'), 25.0, 'sqeuclidean u8');
-near(Vector::euclidean([3, 4], [0, 0], 'u8'), 5.0, 'euclidean u8', 1e-3);
+nearRoot(Vector::euclidean([3, 4], [0, 0], 'u8'), 25.0, 'euclidean u8');
 near(Vector::dot([], [], 'u8'), 0.0, 'dot u8 empty');
 throws(ValueException::class, static fn () => Vector::dot([256], [1], 'u8'), '255', 'u8 256');
 throws(ValueException::class, static fn () => Vector::dot([-1], [1], 'u8'), '0', 'u8 negative');
