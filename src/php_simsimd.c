@@ -851,7 +851,8 @@ PHP_METHOD(SimsimdVector, jensenShannon)
         0,
         simsimd_js_f64,
         simsimd_js_f32,
-        simsimd_js_f16,
+        /* 6.5.16 Haswell partial load mixes empty lanes into a short f16 vector and returns 0. */
+        simsimd_js_f16_serial,
         simsimd_js_bf16,
         NULL,
         NULL
@@ -866,7 +867,8 @@ PHP_METHOD(SimsimdVector, kullbackLeibler)
         0,
         simsimd_kl_f64,
         simsimd_kl_f32,
-        simsimd_kl_f16,
+        /* Same 6.5.16 Haswell tail as jensenShannon. */
+        simsimd_kl_f16_serial,
         simsimd_kl_bf16,
         NULL,
         NULL
