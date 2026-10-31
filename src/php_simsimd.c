@@ -904,14 +904,16 @@ static void simsimd_complex_product(simsimd_php_kind kind, zend_bool conjugate, 
             break;
         case SIMSIMD_KIND_F16:
             if (conjugate) {
-                simsimd_vdot_f16c(left->data, right->data, n, results);
+                /* 6.5.16 Haswell tail calls simsimd_dot_f16c_serial, so short vectors are not conjugated. */
+                simsimd_vdot_f16c_serial(left->data, right->data, n, results);
             } else {
                 simsimd_dot_f16c(left->data, right->data, n, results);
             }
             break;
         case SIMSIMD_KIND_BF16:
             if (conjugate) {
-                simsimd_vdot_bf16c(left->data, right->data, n, results);
+                /* 6.5.16 NEON tail calls simsimd_dot_bf16c_serial for the leftover pairs. */
+                simsimd_vdot_bf16c_serial(left->data, right->data, n, results);
             } else {
                 simsimd_dot_bf16c(left->data, right->data, n, results);
             }
@@ -1055,7 +1057,8 @@ static void simsimd_complex_curve(simsimd_php_kind kind, simsimd_buf *a, simsimd
             simsimd_bilinear_f16c(a->data, b->data, c->data, n, results);
             break;
         case SIMSIMD_KIND_BF16:
-            simsimd_bilinear_bf16c(a->data, b->data, c->data, n, results);
+            /* 6.5.16 Genoa kernel returns garbage when n is not a multiple of 16. */
+            simsimd_bilinear_bf16c_serial(a->data, b->data, c->data, n, results);
             break;
         default:
             simsimd_bilinear_f64c(a->data, b->data, c->data, n, results);
