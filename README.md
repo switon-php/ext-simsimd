@@ -123,13 +123,15 @@ A ZTS library is a second build. Point `PATH` and `PHP_CONFIG` at the ZTS `php` 
 
 ### Windows
 
-Windows x64. PHP is a [windows.php.net](https://windows.php.net/) build, VS16 for 8.2 and 8.3, VS17 for 8.4 and 8.5. Visual Studio 2022 Build Tools with the C++ workload supplies `cl.exe`. Run the commands from Git Bash so `make` can see `uname`.
+Windows x64. PHP is a [windows.php.net](https://windows.php.net/) build, VS16 for 8.2 and 8.3, VS17 for 8.4 and 8.5. The Visual Studio developer prompt supplies `cl.exe` and `nmake`, and that toolset has to be the one the PHP binary was linked with. Current 8.5 builds are MSVC 14.44; a newer 14.51 `link.exe` produces a DLL that PHP refuses to load. The matching PHP development pack supplies `phpize` and `php.exe`. `configure` also requires `bison` and `re2c`; both are in the PHP SDK binary tools, under `msys2/usr/bin`. `PHP_PREFIX` is that PHP directory. Run `make` from Git Bash so it can see `uname`.
 
 ```bash
-choco install make -y
+export PHP_PREFIX=C:/php
 php -v
 make test
 ```
+
+`make test` runs `phpize`, `configure`, and `nmake` inside `pie/`, then copies `php_simsimd.dll` to `pie/modules/`.
 
 The extension version is the git tag without the leading `v`. A tag `v1.0.1` builds version `1.0.1`, and `php --ri simsimd` reports that. A commit after that tag keeps the distance, such as `1.0.1-3`, and does not include the commit id. With no tag in the clone, the build uses `1.0.0`. A release asset is `simsimd-1.0.1-php8.3-nts-linux-x64.tar.gz`: that version, the PHP minor, `nts` or `zts`, `linux`, `macos`, or `windows`, `x64` or `arm64`. Unpack it. The only file inside is `simsimd.so` on Linux and macOS, or `php_simsimd.dll` on Windows. Load the file:
 
